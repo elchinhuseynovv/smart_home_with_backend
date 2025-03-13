@@ -3,12 +3,13 @@ import { Device, AutomationRule } from './types';
 import { devices as initialDevices, automationRules as initialRules, rooms } from './data';
 import { DeviceCard } from './components/DeviceCard';
 import { AutomationCard } from './components/AutomationCard';
+import { PythonAnalytics } from './components/PythonAnalytics';
 import { Home, Settings, Activity } from 'lucide-react';
 
 function App() {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
   const [automationRules, setAutomationRules] = useState<AutomationRule[]>(initialRules);
-  const [activeTab, setActiveTab] = useState<'devices' | 'automation'>('devices');
+  const [activeTab, setActiveTab] = useState<'devices' | 'automation' | 'analytics'>('devices');
 
   const handleDeviceToggle = (id: string) => {
     setDevices(devices.map(device =>
@@ -73,9 +74,19 @@ function App() {
           >
             Automation
           </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              activeTab === 'analytics'
+                ? 'bg-purple-600 text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            Analytics
+          </button>
         </div>
 
-        {activeTab === 'devices' ? (
+        {activeTab === 'devices' && (
           <div className="space-y-8">
             {rooms.map(room => (
               <div key={room.id} className="space-y-4">
@@ -95,7 +106,9 @@ function App() {
               </div>
             ))}
           </div>
-        ) : (
+        )}
+
+        {activeTab === 'automation' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {automationRules.map(rule => (
               <AutomationCard
@@ -104,6 +117,12 @@ function App() {
                 onToggle={handleAutomationToggle}
               />
             ))}
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PythonAnalytics devices={devices} />
           </div>
         )}
       </main>
